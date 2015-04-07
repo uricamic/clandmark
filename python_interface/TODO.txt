@@ -1,0 +1,10 @@
+TODO:
+
+Flandmark:
+	methods to implement
+	0. contsructors/desctructors
+	1. static method getInstanceOf (xml file name)
+	2. detect method (defined in base class CLandmark)
+
+TBA: 
+	the rest of methods needed for proper wrapper
