@@ -130,6 +130,12 @@ public:
 	 */
 	const int * getBaseWindowSize();
 
+	/**
+	 * @brief getScore
+	 * @return
+	 */
+	fl_double_t getScore(void);
+
 private:
 
 	/**
