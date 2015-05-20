@@ -499,6 +499,22 @@ const int * Flandmark::getBaseWindowSize()
 	return baseWindow;
 }
 
+fl_double_t Flandmark::getScore()
+{
+	fl_double_t score = 0.0;
+
+	for (int i=0; i < kLandmarksCount; ++i)
+	{
+		score += Q[i];
+	}
+	for (int i=0; i < kEdgesCount; ++i)
+	{
+		score += G[i];
+	}
+
+	return score;
+}
+
 Flandmark* Flandmark::getInstanceOf(const char *filename, bool train)
 {
 	try
