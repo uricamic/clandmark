@@ -14,10 +14,7 @@
 #include "CAppearanceModel.h"
 #include "CDeformationCost.h"
 #include "CMaxSumSolver.h"
-
-// TODO: OPTIMIZATION TMP!!!
 #include "CFeaturePool.h"
-//==========================
 
 #define cimg_verbosity 1		// we don't need window output capabilities of CImg
 #define cimg_display 0			// we don't need window output capabilities of CImg
@@ -429,6 +426,13 @@ protected:
 	 * @param ground_truth
 	 */
 	void setGroundTruth(int *ground_truth);
+
+	/**
+	 * @brief buildHandHinv
+	 * @param boundingBox
+	 */
+	void buildHandHinv(int *boundingBox);
+
 
 	// crop & resize enlarged face box from input image
 	/**

@@ -50,10 +50,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		{
 			//train = (bool)mxGetData(prhs[2]);
 			int * p_int = (int*)mxGetData(prhs[2]);
-			mexPrintf("DEBUG: p_int[0] = %d\n", p_int[0]);
+//			mexPrintf("DEBUG: p_int[0] = %d\n", p_int[0]);
 			train = (p_int[0] > 0) ? true : false;
 		}
-		mexPrintf("train flag: %d\n", train);
+//		mexPrintf("train flag: %d\n", train);
 
 		// Return a handle to a new C++ instance
 		Flandmark *flandmark = Flandmark::getInstanceOf(fname, train);
@@ -61,6 +61,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		if (flandmark)
 		{
 			plhs[0] = convertPtr2Mat< Flandmark >(flandmark);
+			mexPrintf("Flandmark - initialization \n");
+			mexPrintf("========================== \n");
 			mexPrintf("name: %s\n", flandmark->getName().c_str());
 			mexPrintf("version: %s\n", flandmark->getVersion().c_str());
 			mexPrintf("W dim: %d\n", flandmark->getWdimension());
@@ -69,6 +71,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 #else
 			mexPrintf("SINGLE_PRECISION\n");
 #endif
+			mexPrintf("train flag: %d\n", train);
+			mexPrintf("========================== \n");
+			mexPrintf("\n");
+
 		} else {
 			mexErrMsgTxt("Couldn't create flandmark instance.");
 		}
@@ -1143,7 +1149,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		{
 			mexErrMsgTxt("getPsi_base_optimized: wrong format of configuration!\n"
 						 "Usage: \n"
-						 "\t psi = getPsi_base_optimized(img, configuration); \n"
+						 "\t psi = getPsi_base_optimized(configuration); \n"
 						 "Input: \n"
 						 "\t configuration \t [2 X M (int32)] matrix \n"
 						 "Output: \n"
