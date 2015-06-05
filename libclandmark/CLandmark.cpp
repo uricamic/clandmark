@@ -264,10 +264,10 @@ void CLandmark::getQG_optimized()
 					vertices[i].appearances[j]->update_optimized(NFfeaturesPool->getFeaturesFromPool(0), w[i][j], q[i][j], &groundTruthPositionsNF[INDEX(0, i, 2)]);
 				break;
 				case EXTENDED_SPARSE_LBP:
-					// TODO
+					// TODO: Implementation needed
 				break;
 				case HOG:
-					// TODO
+					// TODO: Implementation needed
 				break;
 			}
 
@@ -464,49 +464,7 @@ void CLandmark::detect_optimizedFromPool(int *boundingBox, fl_double_t *const gr
 	timerPart.tic();
 
 	// Update H and Hinv (to be able to compute landmark positions in original image)
-	double scalefac[2];
-	double C[] = { (boundingBox[INDEX(0, 0, 2)]+boundingBox[INDEX(0, 2, 2)])/2.0, (boundingBox[INDEX(1, 0, 2)]+boundingBox[INDEX(1, 2, 2)])/2.0};
-
-	for (int i=0; i < 4; ++i)
-	{
-		BB[INDEX(0, i, 2)] = C[0] + baseWindowMargin[0]*(boundingBox[INDEX(0, i, 2)]-C[0]);
-		BB[INDEX(1, i, 2)] = C[1] + baseWindowMargin[1]*(boundingBox[INDEX(1, i, 2)]-C[1]);
-	}
-
-	// get scale factor
-	scalefac[0] = sqrt( (float)(square( BB[INDEX(0, 0, 2)]-BB[INDEX(0, 3, 2)] ) + square(BB[INDEX(1, 0, 2)]-BB[INDEX(1, 3, 2)]) ) ) / baseWindow[0];
-	scalefac[1] = sqrt( (float)(square( BB[INDEX(0, 2, 2)]-BB[INDEX(0, 3, 2)] ) + square(BB[INDEX(1, 2, 2)]-BB[INDEX(1, 3, 2)]) ) ) / baseWindow[1];
-
-	// get angle of the in-plane rotation
-	double angle = (double)std::asin( float(fabs(BB[INDEX(1, 0, 2)]-BB[INDEX(1, 1, 2)])/sqrt( (float)(square( BB[INDEX(0, 0, 2)]-BB[INDEX(0, 1, 2)] ) + square( BB[INDEX(1, 0, 2)]-BB[INDEX(1, 1, 2)] )) ) ));
-
-	if (BB[INDEX(1, 1, 2)] > BB[INDEX(1, 0, 2)])
-	{
-		angle = -angle;
-	}
-
-	// build similarity transform matrix
-	H[INDEX(0, 0, 3)] = scalefac[0]*cos(angle);
-	H[INDEX(0, 1, 3)] = scalefac[0]*sin(angle);
-	H[INDEX(0, 2, 3)] = BB[INDEX(0, 0, 2)];
-	H[INDEX(1, 0, 3)] = -scalefac[0]*sin(angle);
-	H[INDEX(1, 1, 3)] = scalefac[0]*cos(angle);
-	H[INDEX(1, 2, 3)] = BB[INDEX(1, 0, 2)];
-	H[INDEX(2, 0, 3)] = 0;
-	H[INDEX(2, 1, 3)] = 0;
-	H[INDEX(2, 2, 3)] = 1;
-
-	// prepare the inverse matrix as well (needed for the back-transformation of landmarks to the original image)
-	double sfinv[2] = {1.0/scalefac[0], 1.0/scalefac[1]};
-	Hinv[INDEX(0, 0, 3)] = sfinv[0]*cos(-angle);
-	Hinv[INDEX(0, 1, 3)] = sfinv[1]*sin(-angle);
-	Hinv[INDEX(0, 2, 3)] = cos(-angle)*(-BB[INDEX(0, 0, 2)]*sfinv[0]) + sin(-angle)*(-BB[INDEX(1, 0, 2)]*sfinv[1]);
-	Hinv[INDEX(1, 0, 3)] = -sfinv[0]*sin(-angle);
-	Hinv[INDEX(1, 1, 3)] = sfinv[1]*cos(-angle);
-	Hinv[INDEX(1, 2, 3)] = (-BB[INDEX(0, 0, 2)]*sfinv[0])*-sin(-angle) + (-BB[INDEX(1, 0, 2)]*sfinv[1])*cos(-angle);
-	Hinv[INDEX(2, 0, 3)] = 0;
-	Hinv[INDEX(2, 1, 3)] = 0;
-	Hinv[INDEX(2, 2, 3)] = 1;
+	buildHandHinv(boundingBox);
 
 	timings.normalizedFrame = timerPart.toc();
 
@@ -540,7 +498,8 @@ void CLandmark::detect_optimizedFromPool(int *boundingBox, fl_double_t *const gr
 	// Get G response
 	for (int i=0; i < kEdgesCount; ++i)
 	{
-		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)], &landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
+		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)],
+				&landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
 	}
 
 	timings.maxsum = timerPart.toc();
@@ -595,7 +554,8 @@ void CLandmark::detect_mirrored(cimg_library::CImg<unsigned char> *inputImage, i
 	// Get G response
 	for (int i=0; i < kEdgesCount; ++i)
 	{
-		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)], &landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
+		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)],
+				&landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
 	}
 
 	timings.maxsum = timerPart.toc();
@@ -722,7 +682,8 @@ void CLandmark::detect_base_optimized(cimg_library::CImg<unsigned char> *inputIm
 	// Get G response
 	for (int i=0; i < kEdgesCount; ++i)
 	{
-		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)], &landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
+		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)],
+				&landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
 	}
 
 	timings.maxsum = timerPart.toc();
@@ -768,7 +729,8 @@ void CLandmark::detect_base_optimized(int *const ground_truth)
 	// Get G response
 	for (int i=0; i < kEdgesCount; ++i)
 	{
-		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)], &landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
+		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)],
+				&landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
 	}
 
 	timings.maxsum = timerPart.toc();
@@ -998,10 +960,11 @@ void CLandmark::transformCoordinatesNF2Image(int *const input, fl_double_t *outp
 	}
 }
 
-void CLandmark::getNormalizedFrame(cimg_library::CImg<unsigned char> *inputImage, int *boundingBox)
+void CLandmark::buildHandHinv(int *boundingBox)
 {
 	double scalefac[2];
-	double C[] = { (boundingBox[INDEX(0, 0, 2)]+boundingBox[INDEX(0, 2, 2)])/2.0, (boundingBox[INDEX(1, 0, 2)]+boundingBox[INDEX(1, 2, 2)])/2.0};
+	double C[] = { (boundingBox[INDEX(0, 0, 2)]+boundingBox[INDEX(0, 2, 2)])/2.0,
+				   (boundingBox[INDEX(1, 0, 2)]+boundingBox[INDEX(1, 2, 2)])/2.0};
 
 	for (int i=0; i < 4; ++i)
 	{
@@ -1010,23 +973,26 @@ void CLandmark::getNormalizedFrame(cimg_library::CImg<unsigned char> *inputImage
 	}
 
 	// get scale factor
-	scalefac[0] = sqrt( (float)(square( BB[INDEX(0, 0, 2)]-BB[INDEX(0, 3, 2)] ) + square(BB[INDEX(1, 0, 2)]-BB[INDEX(1, 3, 2)]) ) ) / baseWindow[0];
-	scalefac[1] = sqrt( (float)(square( BB[INDEX(0, 2, 2)]-BB[INDEX(0, 3, 2)] ) + square(BB[INDEX(1, 2, 2)]-BB[INDEX(1, 3, 2)]) ) ) / baseWindow[1];
+	scalefac[0] = sqrt( (float)(square( BB[INDEX(0, 0, 2)]-BB[INDEX(0, 3, 2)] )
+				  + square(BB[INDEX(1, 0, 2)]-BB[INDEX(1, 3, 2)]) ) ) / baseWindow[0];
+	scalefac[1] = sqrt( (float)(square( BB[INDEX(0, 2, 2)]-BB[INDEX(0, 3, 2)] )
+				  + square(BB[INDEX(1, 2, 2)]-BB[INDEX(1, 3, 2)]) ) ) / baseWindow[1];
 
 	// get angle of the in-plane rotation
-	double angle = (double)std::asin( float(fabs(BB[INDEX(1, 0, 2)]-BB[INDEX(1, 1, 2)])/sqrt( (float)(square( BB[INDEX(0, 0, 2)]-BB[INDEX(0, 1, 2)] ) + square( BB[INDEX(1, 0, 2)]-BB[INDEX(1, 1, 2)] )) ) ));
+	double angle = (double)std::asin(
+					   float(fabs(BB[INDEX(1, 0, 2)]-BB[INDEX(1, 1, 2)])/sqrt( (float)(square( BB[INDEX(0, 0, 2)]-BB[INDEX(0, 1, 2)] )
+				   + square( BB[INDEX(1, 0, 2)]-BB[INDEX(1, 1, 2)] )) ) ));
 
 	if (BB[INDEX(1, 1, 2)] > BB[INDEX(1, 0, 2)])
 	{
 		angle = -angle;
 	}
 
-	// build similarity transform matrix
 	H[INDEX(0, 0, 3)] = scalefac[0]*cos(angle);
 	H[INDEX(0, 1, 3)] = scalefac[0]*sin(angle);
 	H[INDEX(0, 2, 3)] = BB[INDEX(0, 0, 2)];
-	H[INDEX(1, 0, 3)] = -scalefac[0]*sin(angle);
-	H[INDEX(1, 1, 3)] = scalefac[0]*cos(angle);
+	H[INDEX(1, 0, 3)] = -scalefac[1]*sin(angle);
+	H[INDEX(1, 1, 3)] = scalefac[1]*cos(angle);
 	H[INDEX(1, 2, 3)] = BB[INDEX(1, 0, 2)];
 	H[INDEX(2, 0, 3)] = 0;
 	H[INDEX(2, 1, 3)] = 0;
@@ -1043,6 +1009,13 @@ void CLandmark::getNormalizedFrame(cimg_library::CImg<unsigned char> *inputImage
 	Hinv[INDEX(2, 0, 3)] = 0;
 	Hinv[INDEX(2, 1, 3)] = 0;
 	Hinv[INDEX(2, 2, 3)] = 1;
+}
+
+
+void CLandmark::getNormalizedFrame(cimg_library::CImg<unsigned char> *inputImage, int *boundingBox)
+{
+	// Update H and Hinv needed for affine transformation (NF <-> Image)
+	buildHandHinv(boundingBox);
 
 	// Fill in NF
 	float u, v;
