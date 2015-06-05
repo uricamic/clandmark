@@ -136,7 +136,6 @@ public:
 	 */
 	fl_double_t getScore(void);
 
-
 private:
 
 	/**
