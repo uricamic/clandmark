@@ -13,5 +13,5 @@ foreach(var ${EXAMPLES})
     target_link_libraries(${var} flandmark ${OpenCV_LIBS})
 endforeach()
 
-install(TARGETS ${EXAMPLES} DESTINATION clandmark/examples)
+install(TARGETS ${EXAMPLES} EXPORT CLandmarkTargets DESTINATION clandmark/examples COMPONENT Examples)
 

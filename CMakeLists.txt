@@ -1,10 +1,11 @@
-cmake_minimum_required( VERSION 2.8.9 )
+cmake_minimum_required( VERSION 3.0.0 )
 
 project(clandmark)
 
 # The version number
 set(clandmark_VERSION_MAJOR 1)
 set(clandmark_VERSION_MINOR 5)
+set(clandmark_VERSION ${clandmark_VERSION_MAJOR}.${clandmark_VERSION_MINOR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
@@ -57,4 +58,32 @@ endif(BUILD_MATLAB_BINDINGS)
 if(BUILD_PYTHON_BINDINGS)
     add_subdirectory(python_interface)
 endif(BUILD_PYTHON_BINDINGS)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfigVersion.cmake"
+    VERSION ${clandmark_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+export(EXPORT CLandmarkTargets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkTargets.cmake"
+    NAMESPACE CLandmark::
+)
+configure_file(cmake/Templates/CLandmarkConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfig.cmake"
+    COPYONLY
+)
+install(EXPORT CLandmarkTargets
+    FILE CLandmarkTargets.cmake
+    NAMESPACE CLandmark::
+    DESTINATION clandmark/lib/cmake/clandmark
+)
+install(
+    FILES
+    cmake/Templates/CLandmarkConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfigVersion.cmake"
+    DESTINATION clandmark/lib/cmake/clandmark
+    COMPONENT Devel
+)
+
 
