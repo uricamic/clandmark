@@ -4,12 +4,12 @@ if(NOT RAPIDXML_FOUND)
    message(STATUS "RapidXML not found - using internal version.")
 	set(RapidXML_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/>" CACHE PATH "Include directory for RapidXML" FORCE)
    file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
-   install(FILES ${RapidXML_HEADERS} DESTINATION clandmark/include COMPONENT Devel)
+   install(FILES ${RapidXML_HEADERS} DESTINATION include COMPONENT Devel)
    install(
       FILES
       ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
       ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
-      DESTINATION clandmark/share/doc COMPONENT Devel)
+      DESTINATION share/doc COMPONENT Devel)
 endif()
 
 # prefer preinstalled CImg:
@@ -18,9 +18,9 @@ if(NOT CIMG_FOUND)
     message(STATUS "CImg not found - using internal version.")
     set(CImg_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/>" CACHE PATH "Include directory for CImg" FORCE)
     install(FILES ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
-        DESTINATION clandmark/include COMPONENT Devel)
+        DESTINATION include COMPONENT Devel)
     file(GLOB CImg_DOCS ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/*.txt)
-    install(FILES ${CImg_DOCS} DESTINATION clandmark/share/doc COMPONENT Devel)
+    install(FILES ${CImg_DOCS} DESTINATION share/doc COMPONENT Devel)
 endif()
 
 configure_file(
@@ -125,14 +125,14 @@ set(flandmark_models
 
 install(TARGETS clandmark flandmark
     EXPORT CLandmarkTargets
-	 LIBRARY DESTINATION clandmark/lib
-	 ARCHIVE DESTINATION clandmark/lib
-	 RUNTIME DESTINATION clandmark/bin
-    INCLUDES DESTINATION clandmark/include
+	 LIBRARY DESTINATION lib
+	 ARCHIVE DESTINATION lib
+	 RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
 )
-install(FILES ${clandmark_headers} DESTINATION clandmark/include COMPONENT Devel)
-install(FILES ${flandmark_headers} DESTINATION clandmark/include COMPONENT Devel)
-install(FILES ${flandmark_models} DESTINATION clandmark/models)
+install(FILES ${clandmark_headers} DESTINATION include COMPONENT Devel)
+install(FILES ${flandmark_headers} DESTINATION include COMPONENT Devel)
+install(FILES ${flandmark_models} DESTINATION share/clandmark/models)
 
 # deprecated:
 ##setup Config.cmake
