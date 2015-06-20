@@ -1,5 +1,16 @@
-include_directories(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13)
-aux_source_directory(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13 RAPIDXML)
+# prefer preinstalled RapidXML:
+find_package(RapidXML)
+if(NOT RAPIDXML_FOUND)
+   message(STATUS "RapidXML not found - using internal version.")
+	set(RapidXML_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/>" CACHE PATH "Include directory for RapidXML" FORCE)
+   file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
+   install(FILES ${RapidXML_HEADERS} DESTINATION clandmark/include COMPONENT Devel)
+   install(
+      FILES
+      ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
+      ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
+      DESTINATION clandmark/share/doc COMPONENT Devel)
+endif()
 
 # prefer preinstalled CImg:
 find_package(CImg)
@@ -17,7 +28,6 @@ configure_file(
     ${PROJECT_BINARY_DIR}/CLandmarkConfig.h
 )
 set(clandmark_headers
-    ${RAPIDXML}
     msvc-compat.h
     base64.h
     CLandmark.h
@@ -88,7 +98,7 @@ add_library(clandmark ${clandmark_srcs})
 if(NOT ${BUILD_SHARED_LIBS})
 	set_target_properties(clandmark PROPERTIES PREFIX "lib")
 endif()
-target_include_directories(clandmark PUBLIC ${CImg_INCLUDE_DIR})
+target_include_directories(clandmark PUBLIC ${CImg_INCLUDE_DIR} ${RapidXML_INCLUDE_DIR})
 set_target_properties(clandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 set_target_properties(clandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
