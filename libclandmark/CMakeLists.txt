@@ -1,15 +1,22 @@
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13)
 aux_source_directory(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13 RAPIDXML)
 
-include_directories(${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6)
-aux_source_directory(${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6 CIMG)
+# prefer preinstalled CImg:
+find_package(CImg)
+if(NOT CIMG_FOUND)
+    message(STATUS "CImg not found - using internal version.")
+    set(CImg_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/>" CACHE PATH "Include directory for CImg" FORCE)
+    install(FILES ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
+        DESTINATION clandmark/include COMPONENT Devel)
+    file(GLOB CImg_DOCS ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/*.txt)
+    install(FILES ${CImg_DOCS} DESTINATION clandmark/share/doc COMPONENT Devel)
+endif()
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/CLandmarkConfig.h.in
     ${PROJECT_BINARY_DIR}/CLandmarkConfig.h
 )
 set(clandmark_headers
-    ${CIMG}
     ${RAPIDXML}
     msvc-compat.h
     base64.h
@@ -81,7 +88,7 @@ add_library(clandmark ${clandmark_srcs})
 if(NOT ${BUILD_SHARED_LIBS})
 	set_target_properties(clandmark PROPERTIES PREFIX "lib")
 endif()
-target_link_libraries(clandmark)
+target_include_directories(clandmark PUBLIC ${CImg_INCLUDE_DIR})
 set_target_properties(clandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 set_target_properties(clandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
