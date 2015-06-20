@@ -4,13 +4,10 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13 RAPIDXML)
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6)
 aux_source_directory(${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6 CIMG)
 
-# propagate precision definition
-if(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=1 )
-else(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=0 )
-endif(DOUBLE_PRECISION)
-
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/CLandmarkConfig.h.in
+    ${PROJECT_BINARY_DIR}/CLandmarkConfig.h
+)
 set(clandmark_headers
     ${CIMG}
     ${RAPIDXML}
@@ -26,6 +23,7 @@ set(clandmark_headers
     CXMLInOut.h
     CTimer.h
     CTypes.h
+    ${PROJECT_BINARY_DIR}/CLandmarkConfig.h
 )
 
 set(clandmark_srcs
