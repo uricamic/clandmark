@@ -85,11 +85,8 @@ target_link_libraries(clandmark)
 set_target_properties(clandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 set_target_properties(clandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
-    VERSION "${clandmark_VERSION_MAJOR}.${clandmark_VERSION_MINOR}"
+    VERSION "${clandmark_VERSION}"
 )
-
-install(TARGETS clandmark DESTINATION clandmark/bin)
-install(FILES ${clandmark_headers} DESTINATION clandmark/include)
 
 # FLANDMARK
 add_library(flandmark ${flandmark_srcs})
@@ -100,7 +97,7 @@ target_link_libraries(flandmark clandmark)
 set_target_properties(flandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 set_target_properties(flandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
-    VERSION "${clandmark_VERSION_MAJOR}.${clandmark_VERSION_MINOR}"
+    VERSION "${clandmark_VERSION}"
 )
 
 # Models learned distributed with CLandmark
@@ -109,23 +106,31 @@ set(flandmark_models
     ${CMAKE_SOURCE_DIR}/data/haarcascade_frontalface_alt.xml
 )
 
-install(TARGETS flandmark DESTINATION clandmark/bin)
-install(FILES ${flandmark_headers} DESTINATION clandmark/include)
+install(TARGETS clandmark flandmark
+    EXPORT CLandmarkTargets
+	 LIBRARY DESTINATION clandmark/lib
+	 ARCHIVE DESTINATION clandmark/lib
+	 RUNTIME DESTINATION clandmark/bin
+    INCLUDES DESTINATION clandmark/include
+)
+install(FILES ${clandmark_headers} DESTINATION clandmark/include COMPONENT Devel)
+install(FILES ${flandmark_headers} DESTINATION clandmark/include COMPONENT Devel)
 install(FILES ${flandmark_models} DESTINATION clandmark/models)
 
-#setup Config.cmake
-set(CLANDMARK_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/libclandmark" "${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13" "${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6")
-get_property(CLANDMARK_LIBRARIES TARGET clandmark PROPERTY LOCATION)
-configure_file(clandmarkConfig.cmake.in
-    "${PROJECT_BINARY_DIR}/libclandmark/clandmarkConfig.cmake" @ONLY
-)
-
-export(PACKAGE clandmark)
-
-set(FLANDMARK_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/libclandmark" "${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13" "${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6")
-get_property(FLANDMARK_LIBRARIES TARGET flandmark PROPERTY LOCATION)
-configure_file(flandmarkConfig.cmake.in
-    "${PROJECT_BINARY_DIR}/libclandmark/flandmarkConfig.cmake" @ONLY
-)
-
-export(PACKAGE flandmark)
+# deprecated:
+##setup Config.cmake
+#set(CLANDMARK_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/libclandmark" "${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13" "${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6")
+#get_property(CLANDMARK_LIBRARIES TARGET clandmark PROPERTY LOCATION)
+#configure_file(clandmarkConfig.cmake.in
+#    "${PROJECT_BINARY_DIR}/libclandmark/clandmarkConfig.cmake" @ONLY
+#)
+#
+#export(PACKAGE clandmark)
+#
+#set(FLANDMARK_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/libclandmark" "${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13" "${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6")
+#get_property(FLANDMARK_LIBRARIES TARGET flandmark PROPERTY LOCATION)
+#configure_file(flandmarkConfig.cmake.in
+#    "${PROJECT_BINARY_DIR}/libclandmark/flandmarkConfig.cmake" @ONLY
+#)
+#
+#export(PACKAGE flandmark)
