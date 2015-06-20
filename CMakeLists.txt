@@ -58,10 +58,3 @@ if(BUILD_PYTHON_BINDINGS)
     add_subdirectory(python_interface)
 endif(BUILD_PYTHON_BINDINGS)
 
-# propagate precision definition
-if(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=1 )
-else(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=0 )
-endif(DOUBLE_PRECISION)
-
