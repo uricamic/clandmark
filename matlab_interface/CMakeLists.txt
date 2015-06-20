@@ -102,8 +102,8 @@ else(DOUBLE_PRECISION)
 	)
 endif(DOUBLE_PRECISION)
 
-install(FILES ${MEX_FILE_flandmark_interface} DESTINATION clandmark/mex COMPONENT Matlab)
-install(FILES ${MEX_FILE_featuresPool_interface} DESTINATION clandmark/mex COMPONENT Matlab)
+install(FILES ${MEX_FILE_flandmark_interface} DESTINATION share/clandmark/mex COMPONENT Matlab)
+install(FILES ${MEX_FILE_featuresPool_interface} DESTINATION share/clandmark/mex COMPONENT Matlab)
 
 	else()
 

@@ -76,13 +76,13 @@ configure_file(cmake/Templates/CLandmarkConfig.cmake
 install(EXPORT CLandmarkTargets
     FILE CLandmarkTargets.cmake
     NAMESPACE CLandmark::
-    DESTINATION clandmark/lib/cmake/clandmark
+    DESTINATION lib/cmake/clandmark
 )
 install(
     FILES
     cmake/Templates/CLandmarkConfig.cmake
     "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfigVersion.cmake"
-    DESTINATION clandmark/lib/cmake/clandmark
+    DESTINATION lib/cmake/clandmark
     COMPONENT Devel
 )
 
