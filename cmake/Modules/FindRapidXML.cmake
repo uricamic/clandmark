@@ -3,7 +3,7 @@
 #  RAPIDXML_FOUND - System has RapidXML
 #  RapidXML_INCLUDE_DIR - The RapidXML include directories
 
-find_path(RapidXML_INCLUDE_DIR rapidxml.hpp)
+find_path(RapidXML_INCLUDE_DIR rapidxml.hpp PATH_SUFFIXES rapidxml)
 
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set RAPIDXML_FOUND to TRUE
