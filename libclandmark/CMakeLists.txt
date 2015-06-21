@@ -9,7 +9,7 @@ if(NOT RAPIDXML_FOUND)
       FILES
       ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
       ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
-      DESTINATION share/doc COMPONENT Devel)
+      DESTINATION share/doc/clandmark COMPONENT Devel)
 endif()
 
 # prefer preinstalled CImg:
@@ -20,7 +20,7 @@ if(NOT CIMG_FOUND)
     install(FILES ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
         DESTINATION include COMPONENT Devel)
     file(GLOB CImg_DOCS ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/*.txt)
-    install(FILES ${CImg_DOCS} DESTINATION share/doc COMPONENT Devel)
+    install(FILES ${CImg_DOCS} DESTINATION share/doc/clandmark COMPONENT Devel)
 endif()
 
 configure_file(
