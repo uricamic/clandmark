@@ -1,15 +1,32 @@
-# prefer preinstalled RapidXML:
+# prefer preinstalled RapidXML...
 find_package(RapidXML)
+
+if(RAPIDXML_FOUND)
+    #...but check for known upstream bugs:
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES_BAK "${CMAKE_REQUIRED_INCLUDES}")
+    list(APPEND CMAKE_REQUIRED_INCLUDES "${RapidXML_INCLUDE_DIR}")
+    check_cxx_source_compiles(
+		 "#include <rapidxml_print.hpp>\nint main() { rapidxml::xml_document<> doc; std::string test; rapidxml::print(std::back_inserter(test), doc); return 0; }"
+        RAPIDXML_PRINT_HEADER_OK
+    )
+    if(NOT RAPIDXML_PRINT_HEADER_OK)
+       # issue a fatal error here - if we were to use the internal version, we might overwrite the other installation
+       message(FATAL_ERROR "RapidXML found but not usable! Please remove preinstalled version.")
+    endif()
+endif()
+
 if(NOT RAPIDXML_FOUND)
-   message(STATUS "RapidXML not found - using internal version.")
-	set(RapidXML_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/>" CACHE PATH "Include directory for RapidXML" FORCE)
-   file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
-   install(FILES ${RapidXML_HEADERS} DESTINATION include COMPONENT Devel)
-   install(
-      FILES
-      ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
-      ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
-      DESTINATION share/doc/clandmark COMPONENT Devel)
+    message(STATUS "RapidXML not found - using internal version.")
+    set(RapidXML_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/>" CACHE PATH "Include directory for RapidXML" FORCE)
+    file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
+    install(FILES ${RapidXML_HEADERS} DESTINATION include COMPONENT Devel)
+    install(
+        FILES
+        ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
+        ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
+        DESTINATION share/doc/clandmark COMPONENT Devel
+    )
 endif()
 
 # prefer preinstalled CImg:
