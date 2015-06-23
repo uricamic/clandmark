@@ -14,6 +14,8 @@
 #include <cfloat>
 #include <limits>
 
+#include "CLandmarkConfig.h"
+
 namespace clandmark {
 
 // REDFINE DOUBLE_PRECISION AS FLOAT

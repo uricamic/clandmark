@@ -4,6 +4,18 @@
 
 Detailed description will be added soon
 
+## Dependencies
+
+### libclandmark
+
+ - CImg (>= 1.5.6)
+ - RapidXML (1.13)
+
+If any of these libraries are installed in a known system prefix, CLandmark will try to use the already installed version.
+Otherwise, the internal version will be used and its files will be installed alongside CLandmark.
+
+**CAVEAT**: The version of RapidXML that comes with CLandmark has been changed to fix some missing forward declarations.
+
 ## References
 
 In case you use clandmark in an academic work, please cite the following paper:
