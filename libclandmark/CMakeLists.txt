@@ -8,7 +8,7 @@ if(RAPIDXML_FOUND)
     list(APPEND CMAKE_REQUIRED_INCLUDES "${RapidXML_INCLUDE_DIR}")
     check_cxx_source_compiles(
 		 "#include <rapidxml_print.hpp>\nint main() { rapidxml::xml_document<> doc; std::string test; rapidxml::print(std::back_inserter(test), doc); return 0; }"
-        RAPIDXML_PRINT_HEADER_OK
+	RAPIDXML_PRINT_HEADER_OK
     )
     if(NOT RAPIDXML_PRINT_HEADER_OK)
        # issue a fatal error here - if we were to use the internal version, we might overwrite the other installation
@@ -22,10 +22,10 @@ if(NOT RAPIDXML_FOUND)
     file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
     install(FILES ${RapidXML_HEADERS} DESTINATION include COMPONENT Devel)
     install(
-        FILES
-        ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
-        ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
-        DESTINATION share/doc/clandmark COMPONENT Devel
+	FILES
+	${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
+	${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
+	DESTINATION share/doc/clandmark COMPONENT Devel
     )
 endif()
 
@@ -35,7 +35,7 @@ if(NOT CIMG_FOUND)
     message(STATUS "CImg not found - using internal version.")
     set(CImg_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/>" CACHE PATH "Include directory for CImg" FORCE)
     install(FILES ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
-        DESTINATION include COMPONENT Devel)
+	DESTINATION include COMPONENT Devel)
     file(GLOB CImg_DOCS ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/*.txt)
     install(FILES ${CImg_DOCS} DESTINATION share/doc/clandmark COMPONENT Devel)
 endif()
@@ -113,7 +113,9 @@ endif(USE_OPENMP)
 # CLANDMARK
 add_library(clandmark ${clandmark_srcs})
 if(NOT ${BUILD_SHARED_LIBS})
+    if(NOT MSVC)
 	set_target_properties(clandmark PROPERTIES PREFIX "lib")
+    endif()
 endif()
 target_include_directories(clandmark PUBLIC ${CImg_INCLUDE_DIR} ${RapidXML_INCLUDE_DIR})
 set_target_properties(clandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
@@ -125,7 +127,9 @@ set_target_properties(clandmark PROPERTIES
 # FLANDMARK
 add_library(flandmark ${flandmark_srcs})
 if(NOT ${BUILD_SHARED_LIBS})
-    set_target_properties(flandmark PROPERTIES PREFIX "lib")
+    if(NOT MSVC)
+	set_target_properties(flandmark PROPERTIES PREFIX "lib")
+    endif()
 endif()
 target_link_libraries(flandmark clandmark)
 set_target_properties(flandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
@@ -145,7 +149,7 @@ install(TARGETS clandmark flandmark
 	 LIBRARY DESTINATION lib
 	 ARCHIVE DESTINATION lib
 	 RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
+	 INCLUDES DESTINATION include
 )
 install(FILES ${clandmark_headers} DESTINATION include COMPONENT Devel)
 install(FILES ${flandmark_headers} DESTINATION include COMPONENT Devel)
