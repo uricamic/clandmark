@@ -1,10 +1,11 @@
-cmake_minimum_required( VERSION 2.8.9 )
+cmake_minimum_required( VERSION 3.0.0 )
 
 project(clandmark)
 
 # The version number
 set(clandmark_VERSION_MAJOR 1)
 set(clandmark_VERSION_MINOR 5)
+set(clandmark_VERSION ${clandmark_VERSION_MAJOR}.${clandmark_VERSION_MINOR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
@@ -29,6 +30,9 @@ option(USE_OPENMP "Enable/Disable OpenMP." OFF)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -pedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic")
+
+# for configured header files:
+include_directories(${PROJECT_BINARY_DIR})
 
 # build clandmark
 add_subdirectory (libclandmark)
@@ -55,10 +59,31 @@ if(BUILD_PYTHON_BINDINGS)
     add_subdirectory(python_interface)
 endif(BUILD_PYTHON_BINDINGS)
 
-# propagate precision definition
-if(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=1 )
-else(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=0 )
-endif(DOUBLE_PRECISION)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfigVersion.cmake"
+    VERSION ${clandmark_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+export(EXPORT CLandmarkTargets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkTargets.cmake"
+    NAMESPACE CLandmark::
+)
+configure_file(cmake/Templates/CLandmarkConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfig.cmake"
+    COPYONLY
+)
+install(EXPORT CLandmarkTargets
+    FILE CLandmarkTargets.cmake
+    NAMESPACE CLandmark::
+    DESTINATION lib/cmake/clandmark
+)
+install(
+    FILES
+    cmake/Templates/CLandmarkConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/clandmark/CLandmarkConfigVersion.cmake"
+    DESTINATION lib/cmake/clandmark
+    COMPONENT Devel
+)
+
 
