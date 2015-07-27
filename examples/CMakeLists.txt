@@ -1,6 +1,6 @@
 include_directories("${PROJECT_SOURCE_DIR}/libclandmark")
 
-find_package( OpenCV REQUIRED )
+find_package( OpenCV REQUIRED core imgproc objdetect highgui )
 include_directories(${OpenCV_INCLUDE_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13)
