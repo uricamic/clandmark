@@ -9,8 +9,11 @@ include_directories(
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 #include_directories( ${PROJECT_SOURCE_DIR}/libclandmark )
-#include_directories( ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13 )
-#include_directories( ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6 )
+include_directories( ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13 )
+include_directories( ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6 )
+execute_process(COMMAND python -c "import numpy as np; print np.get_include()" OUTPUT_VARIABLE NUMPY_INCLUDE)
+include_directories(${NUMPY_INCLUDE})
+
 
 set(PY_NAME_interface python_interface)
 
