@@ -1,4 +1,4 @@
-function [ P, stats, score ] = flandmark_opt_sv_detector( Ibw, bbox, flandmark )
+function [ P, stats, score, QG ] = flandmark_opt_sv_detector( Ibw, bbox, flandmark )
 %FLANDMARK_SV_DETECTOR Summary of this function goes here
 %   Detailed explanation goes here
 % 
@@ -7,7 +7,7 @@ function [ P, stats, score ] = flandmark_opt_sv_detector( Ibw, bbox, flandmark )
     % check inputs
     %TODO
 
-    [P, score] = flandmark.detect_optimized(Ibw, bbox);
+    [P, score, QG] = flandmark.detect_optimized(Ibw, bbox);
     stats = flandmark.getTimingsStats();
     
 end
