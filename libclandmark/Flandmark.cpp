@@ -172,6 +172,7 @@ Flandmark::Flandmark(const char *filename, bool train) throw (int)
 	int graph_type;
 	int bw_height, bw_width;
 	fl_double_t bw_margin_x, bw_margin_y;
+    fl_double_t sigma;
 
 	// Nodes
 	int nodeID;
@@ -218,6 +219,10 @@ Flandmark::Flandmark(const char *filename, bool train) throw (int)
 
 	CLandmark::init(landmarksCount, edgesCount, bw_width, bw_height, bw_margin_x, bw_margin_y);
 
+    sigma = (fl_double_t)fs["sigma"];
+	if (sigma != 0x0)
+		this->setSmoothingSigma(sigma);
+    
 	// create nodes
 	std::vector<XmlNode> nodes = fs["Nodes"].getSet("Node");
 	for (unsigned int index = 0; index < nodes.size(); ++index)
@@ -497,6 +502,11 @@ const int * Flandmark::getSearchSpace(const int landmark_id)
 const int * Flandmark::getBaseWindowSize()
 {
 	return baseWindow;
+}
+
+const fl_double_t * Flandmark::getBaseWindowMargin()
+{
+	return baseWindowMargin;
 }
 
 fl_double_t Flandmark::getScore()

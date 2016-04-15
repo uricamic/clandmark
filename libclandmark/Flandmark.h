@@ -129,6 +129,12 @@ public:
 	 * @return
 	 */
 	const int * getBaseWindowSize();
+    
+    /**
+	 * @brief getBaseWindowMargin
+	 * @return
+	 */
+	const fl_double_t* getBaseWindowMargin();
 
 	/**
 	 * @brief getScore

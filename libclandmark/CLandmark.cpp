@@ -71,6 +71,8 @@ CLandmark::CLandmark()
 	L = 0x0;
 
 	psiNodesDimension = 0;
+    
+    sigma = -1;
 }
 
 void CLandmark::init(
@@ -88,6 +90,8 @@ void CLandmark::init(
 	baseWindow[1] = base_window_height;
 	baseWindowMargin[0] = base_window_margin_x;
 	baseWindowMargin[1] = base_window_margin_y;
+    
+    sigma = -1;
 
 	groundTruthPositions = new fl_double_t[2*kLandmarksCount];
 	groundTruthPositionsNF = new int[2*kLandmarksCount];
@@ -261,7 +265,9 @@ void CLandmark::getQG_optimized()
 			switch (type)
 			{
 				case SPARSE_LBP:
-					vertices[i].appearances[j]->update_optimized(NFfeaturesPool->getFeaturesFromPool(0), w[i][j], q[i][j], &groundTruthPositionsNF[INDEX(0, i, 2)]);
+					vertices[i].appearances[j]->update_optimized(
+								NFfeaturesPool->getFeaturesFromPool(0),
+								w[i][j], q[i][j], &groundTruthPositionsNF[INDEX(0, i, 2)]);
 				break;
 				case EXTENDED_SPARSE_LBP:
 					// TODO: Implementation needed
@@ -498,8 +504,9 @@ void CLandmark::detect_optimizedFromPool(int *boundingBox, fl_double_t *const gr
 	// Get G response
 	for (int i=0; i < kEdgesCount; ++i)
 	{
-		G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)],
-				&landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
+        G[i] = edges[i]->getGvalue(&landmarksPositionsNF[INDEX(0, edges[i]->getParent()->getNodeID(), 2)], 
+                &landmarksPositionsNF[INDEX(0, edges[i]->getChild()->getNodeID(), 2)], w[kLandmarksCount+i][0]);
+
 	}
 
 	timings.maxsum = timerPart.toc();
@@ -1028,6 +1035,11 @@ void CLandmark::getNormalizedFrame(cimg_library::CImg<unsigned char> *inputImage
 			(*normalizedFrame)(x, y) = inputImage->linear_atXY(u, v);
 		}
 	}
+    
+    if (sigma > 0)
+	{
+		normalizedFrame->blur(sigma);
+	}
 }
 
 void CLandmark::computeWdimension(void)
@@ -1057,16 +1069,21 @@ void CLandmark::write(const char *filename, bool writeW)
 	time_t rawtime;
 	time(&rawtime);
 
+    std::string version = asctime(localtime(&rawtime));
+	const size_t strEnd = version.find_last_not_of(" \t");
+	version = version.substr(0, strEnd);
+    
 	fs
 	<< "name" << this->name
-	<< "version" << asctime(localtime(&rawtime))
+	<< "version" << version
 	<< "num_nodes" << kLandmarksCount
 	<< "num_edges" << kEdgesCount
 	<< "graph_type" << TREE
 	<< "bw_width" << baseWindow[0]
 	<< "bw_height" << baseWindow[1]
 	<< "bw_margin_x" << baseWindowMargin[0]
-	<< "bw_margin_y" << baseWindowMargin[1];
+	<< "bw_margin_y" << baseWindowMargin[1]
+    << "sigma" << sigma;
 
 	fs << "Nodes" << "[";
 	for (int i=0; i < kLandmarksCount; ++i)
@@ -1165,4 +1182,34 @@ int *CLandmark::getWindowSizes(void)
 	}
 
 	return winSizes;
+}
+
+std::vector<std::string> CLandmark::getLandmarkNames(void)
+{
+	std::vector<std::string> res;
+	for (unsigned int i=0; i < vertices.size(); ++i)
+	{
+		res.push_back(vertices[i].name);
+	}
+
+	return res;
+}
+
+std::vector< std::vector< fl_double_t* > > CLandmark::getQs(void)
+{
+	std::vector< std::vector< fl_double_t* > > res;
+
+	for (unsigned int i=0; i < q.size(); ++i)
+	{
+		res.push_back(std::vector< fl_double_t* >());
+		for (unsigned int j=0; j < q[i].size(); ++j)
+		{
+			int length = vertices[i].appearances[j]->getLength();
+			fl_double_t *tmp = new fl_double_t[length];
+			memcpy(tmp, q[i][j], sizeof(fl_double_t)*length);
+			res[i].push_back(tmp);
+		}
+	}
+
+	return res;
 }

@@ -818,12 +818,23 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		//if (nlhs < 0 || nrhs < 4 || nrhs > 5)
 		if (nlhs < 0 || nrhs < 2 || nrhs > 5)
 		{
-			//mexErrMsgTxt("getNF: unexpected arguments.");
-			mexErrMsgTxt("getNF: chujlo.");
+			mexErrMsgTxt("getNF: unexpected arguments.\n"
+						 "Usgae:\n"
+						 "\t [NF, GT] = getNormalizedFrame(Ibw, bbox, gt, sigma)\n"
+						 "Input:\n"
+						 "\t Ibw \t...\t [(n x m) uint8] grayscale input image \n"
+						 "\t bbox \t...\t [(4 x 1) or (8 x 1) int32] bounding box \n"
+						 "\t gt \t...\t [(2 x L) doubgle] annotated landmarks in image - (x; y) coordinates \n"
+						 "Output: \n"
+						 "\t NF \t...\t [bw(1) x bw(2) uint8] normalized image frame \n"
+						 "\t GT \t...\t [(2 x L) int32] annotated landmarks in NF - (x; y) coordinates \n"
+					);
+
 		}
 
 		cimg_library::CImg<unsigned char> *nf = 0x0;
 
+        // Do not calculate, just return NF from flandmark class
 		if (nrhs == 2)
 		{
 			nf = flandmark_instance->getNF();
@@ -1481,6 +1492,31 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		const int *bw = flandmark_instance->getBaseWindowSize();
 		output[0] = bw[0];
 		output[1] = bw[1];
+
+		return;
+	}
+    
+    // get bw_margin
+	//---------------------------------------------------------------------------------------------
+	if (!strcmp("get_bw_margin", cmd))
+	{
+		// Check parameters
+		if (nlhs < 0 || nrhs != 2)
+		{
+			mexErrMsgTxt("get_bw_margin: unexpected arguments.\n"
+						 "Usage: \n"
+						 "\t ss = get_bw_margin(); \n"
+						 "Output: \n"
+						 "\t bw \t [2 x 1 (double)] vector\n");
+		}
+
+		// Get nodes search spaces
+		plhs[0] = mxCreateNumericMatrix(2, 1, mxDOUBLE_CLASS, mxREAL);
+		double *output = (double*)mxGetData(plhs[0]);
+
+		const fl_double_t *bw_margin = flandmark_instance->getBaseWindowMargin();
+		output[0] = bw_margin[0];
+		output[1] = bw_margin[1];
 
 		return;
 	}
@@ -2212,8 +2248,150 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		return;
 	}
 
+    // Get edges
+	if (!strcmp("getEdges", cmd))
+	{
+		// Check the parameters
+		if (nlhs < 0 || nrhs != 2)
+		{
+			mexErrMsgTxt("getEdges: unexpected arguments.\n"
+						 "Usage: \n"
+						 "\t edges = getEdges();\n"
+					);
+		}
+
+		int *p_data;
+		int *edges = flandmark_instance->getEdges();
+		for (int i=0; i < 2*flandmark_instance->getEdgesCount(); ++i)
+			edges[i] += 1;	// MATLAB 1-based format indexing;
+
+		plhs[0] = mxCreateNumericMatrix(2, flandmark_instance->getEdgesCount(), mxINT32_CLASS, mxREAL);
+		p_data = (int*)mxGetData(plhs[0]);
+		memcpy(p_data, edges, (2*flandmark_instance->getEdgesCount())*sizeof(int));
+		delete [] edges;
+
+		return;
+	}
+
+	// Get name
+	if (!strcmp("getName", cmd))
+	{
+		// Check the parameters
+		if (nlhs < 0 || nrhs != 2)
+		{
+			mexErrMsgTxt("getName: unexpected arguments.\n"
+						 "Usage: \n"
+						 "\t name = getName();\n"
+					);
+		}
+
+		plhs[0] = mxCreateString(flandmark_instance->getName().c_str());
+
+		return;
+	}
+
+	// Get version
+	if (!strcmp("getVersion", cmd))
+	{
+		// Check the parameters
+		if (nlhs < 0 || nrhs != 2)
+		{
+			mexErrMsgTxt("getVersion: unexpected arguments.\n"
+						 "Usage: \n"
+						 "\t version = getVersion();\n"
+					);
+		}
+
+		plhs[0] = mxCreateString(flandmark_instance->getVersion().c_str());
+
+		return;
+	}
+    
 	/// DEBUG & HELPER functions ========================================================================
 
+    if (!strcmp("getLandmarkNames", cmd))
+	{
+		if (nlhs < 0 || nrhs != 2)
+		{
+			mexErrMsgTxt("getLandmarkNames: unexpected arguments.\n"
+						 "Usage: \n"
+						 "\t names = getLandmarkNames();\n"
+					);
+		}
+
+		std::vector<std::string> landmarkNames = flandmark_instance->getLandmarkNames();
+
+		mxArray *arr;
+		plhs[0] = mxCreateCellMatrix(landmarkNames.size(), 1);
+
+		for (unsigned int i=0; i < landmarkNames.size(); ++i)
+		{
+			arr = mxCreateString(landmarkNames[i].c_str());
+			mxSetCell(plhs[0], i, arr);
+		}
+
+		return;
+	}
+
+	if (!strcmp("getQs", cmd))
+	{
+		//TODO!!!
+		if (nlhs < 0 || nrhs != 2)
+		{
+			mexErrMsgTxt("getQs: unexpected arguments.\n"
+						 "Usage: \n"
+						 "\t Qs = getQs();\n"
+					);
+		}
+
+		std::vector< std::vector< fl_double_t* > > Qs = flandmark_instance->getQs();
+
+		mxArray *arr;
+		fl_double_t *p_data;
+		int ss[4];
+		int siz[2];
+		int length;
+
+		plhs[0] = mxCreateCellMatrix(Qs.size(), 1);
+
+		for (unsigned int i=0; i < Qs.size(); ++i)
+		{
+			if (Qs[i].size() == 1)
+			{
+				const int *tmp = flandmark_instance->getSearchSpace(i);
+				memcpy(&ss[0], tmp, 4*sizeof(int));
+				siz[0] = ss[2]-ss[0]+1;
+				siz[1] = ss[3]-ss[1]+1;
+				length = siz[0]*siz[1];
+
+#if DOUBLE_PRECISION==1
+				arr = mxCreateNumericMatrix(siz[1], siz[0], mxDOUBLE_CLASS, mxREAL);
+#else
+				arr = mxCreateNumericMatrix(siz[1], siz[0], mxSINGLE_CLASS, mxREAL);
+#endif
+				p_data = (fl_double_t*)mxGetData(arr);
+				memcpy(p_data, Qs[i][0], (length)*sizeof(fl_double_t));
+				mxSetCell(plhs[0], i, arr);
+			} else {
+				// TODO - do not forget to implement this (multiple appearances case)
+			}
+		}
+
+		// clean Qs
+		if (!Qs.empty())
+		{
+			for (unsigned int i=0; i < Qs.size(); ++i)
+			{
+				for (unsigned int j=0; j < Qs[i].size(); ++j)
+					delete [] Qs[i][j];
+				Qs[i].clear();
+			}
+			Qs.clear();
+		}
+
+		return;
+	}
+    
 	if (!strcmp("getIntermediateResults", cmd))
 	{
 		//TODO!!

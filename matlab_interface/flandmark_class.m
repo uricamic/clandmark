@@ -105,6 +105,11 @@ classdef flandmark_class < handle
     function varargout = getBWsize(this, varargin)
       [varargout{1:nargout}] = flandmark_interface('getBWsize', this.objectHandle, varargin{:});
     end;
+    
+    %% get_bw_margin - class method call
+    function varargout = getBWmargin(this, varargin)
+        [varargout{1:nargout}] = flandmark_interface('get_bw_margin', this.objectHandle, varargin{:});
+    end;
 
     %% Get Landmarks Count - class method call
     function varargout = getLandmarksCount(this, varargin)
@@ -141,6 +146,16 @@ classdef flandmark_class < handle
       [varargout{1:nargout}] = flandmark_interface('getIntermediateResults', this.objectHandle, varargin{:});
     end;
 
+     %% getLandmarkNames - class method call
+    function varargout = getLandmarkNames(this, varargin)
+        [varargout{1:nargout}] = flandmark_interface('getLandmarkNames', this.objectHandle, varargin{:});
+    end;
+
+    %% getQs - class method call
+    function varargout = getQs(this, varargin)
+        [varargout{1:nargout}] = flandmark_interface('getQs', this.objectHandle, varargin{:});
+    end;
+    
     %%% Two stage learning related methods ------------------------------------------------------------------------------
 
     %% Get PsiNodes Base - class method call
@@ -195,6 +210,21 @@ classdef flandmark_class < handle
 	[varargout{1:nargout}] = flandmark_interface('getTimingsStats', this.objectHandle, varargin{:});
     end;
 
+    %% Get edges - class method call
+    function varargout = getEdges(this, varargin)
+        [varargout{1:nargout}] = flandmark_interface('getEdges', this.objectHandle, varargin{:});
+    end;
+
+    %% Get name - class method call
+    function varargout = getName(this, varargin)
+        [varargout{1:nargout}] = flandmark_interface('getName', this.objectHandle, varargin{:});
+    end;
+
+    %% Get version - class method call
+    function varargout = getVersion(this, varargin)
+        [varargout{1:nargout}] = flandmark_interface('getVersion', this.objectHandle, varargin{:});
+    end;
+    
     %%% SPEED UP --------------------------------------------------------------------------------------------------------
 
     %% Set NF featuresPool - class method call

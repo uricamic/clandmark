@@ -88,6 +88,11 @@ XmlNode::operator int()
 XmlNode::operator fl_double_t()
 {
 	fl_double_t value = 0x0;
+    
+    if (node == 0x0)
+	{
+		return 0x0;
+	}
 
 	std::stringstream ss(node->value());
 	if ((ss >> value).fail())
