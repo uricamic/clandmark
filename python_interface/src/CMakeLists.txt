@@ -16,14 +16,15 @@ target_link_libraries( py_flandmark ${FLANDMARK_LIBRARIES} ${CLANDMARK_LIBRARIES
 add_custom_target(${PY_NAME_interface} ALL DEPENDS py_flandmark)
 
 #TODO: copy libclandmark and libflandmark
+
 add_custom_command(
     TARGET ${PY_NAME_interface}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/python_interface/src/py_flandmark.so ${PROJECT_BINARY_DIR}/python_interface/bin
-    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/python_interface/src/py_featurePool.so ${PROJECT_BINARY_DIR}/python_interface/bin
+#    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/python_interface/src/py_featurePool.so  ${PROJECT_BINARY_DIR}/python_interface/bin
 #    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/libclandmark/libclandmark${CMAKE_SHARED_LIBRARY_SUFFIX}.${clandmark_VERSION_MAJOR} ${PROJECT_BINARY_DIR}/python_interface/bin
 #    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/libclandmark/libflandmark${CMAKE_SHARED_LIBRARY_SUFFIX}.${clandmark_VERSION_MAJOR} ${PROJECT_BINARY_DIR}/python_interface/bin
-    COMMAND ${CMAKE_COMMAND} -E copy ${FLANDMARK_LIBRARIES} ${PROJECT_BINARY_DIR}/python_interface/bin
-    COMMAND ${CMAKE_COMMAND} -E copy ${CLANDMARK_LIBRARIES} ${PROJECT_BINARY_DIR}/python_interface/bin
+#    COMMAND ${CMAKE_COMMAND} -E copy ${FLANDMARK_LIBRARIES} ${PROJECT_BINARY_DIR}/python_interface/bin
+#    COMMAND ${CMAKE_COMMAND} -E copy ${CLANDMARK_LIBRARIES} ${PROJECT_BINARY_DIR}/python_interface/bin
     COMMENT "Copying python_interface/src/py_flandmark${CMAKE_SHARED_LIBRARY_SUFFIX}"
 )
