@@ -376,6 +376,18 @@ public:
 	 */
 	inline bool nodeHasLoss(int nodeID) { return vertices[nodeID].appearances[0]->hasLoss(); }
 
+    /**
+	 * @brief setSmoothingSigma
+	 * @param sigma
+	 */
+	inline void setSmoothingSigma(fl_double_t sigma) { this->sigma = sigma; }
+
+	/**
+	 * @brief getSmoothingSigma
+	 * @return
+	 */
+	inline fl_double_t getSmoothingSigma(void) { return this->sigma; }
+    
 	/// NEW FEATURE (NOT IMPLEMENTED YET)
 	void changeSearchSpace();
 	/// -----------
@@ -397,6 +409,18 @@ public:
 	 */
 	inline std::vector<fl_double_t *> getIntermediateResults(void) { return solver->getIntermediateResults(); }
 
+    /**
+	 * @brief getLandmarkNames Returns individual landmarks names
+	 * @return
+	 */
+	std::vector<std::string> getLandmarkNames(void);
+
+	/**
+	 * @brief getQs Returns feature response of individual landmarks (for visualization in MATLAB interface)
+	 * @return
+	 */
+	std::vector< std::vector< fl_double_t* > > getQs(void);
+    
 protected:
 
 	// update values of functions q and g
@@ -491,6 +515,9 @@ protected:
 	int baseWindow[2];									/**< */
 	fl_double_t baseWindowMargin[2];					/**< */
 
+    // sigma for optional Gaussian filter smoothing of normalized frame
+	fl_double_t sigma;                                  /**< */
+    
 	// normalized image frame related variables
 	cimg_library::CImg<unsigned char> *normalizedFrame;	/**< */
 	fl_double_t BB[8];									/**< */

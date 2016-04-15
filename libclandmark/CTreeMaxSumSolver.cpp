@@ -311,7 +311,8 @@ void CTreeMaxSumSolver::solve(const std::vector<std::vector<fl_double_t *> > &w,
 				fl_double_t *W = w[kLandmarks+edgeID][0];
 
 				// Check for 0 weight (then DT is not working)
-				if (fabs(W[0]) <= FLT_EPSILON || fabs(W[1]) <= FLT_EPSILON || fabs(W[2]) <= FLT_EPSILON || fabs(W[3]) <= FLT_EPSILON)
+				//if (fabs(W[0]) <= FLT_EPSILON || fabs(W[1]) <= FLT_EPSILON || fabs(W[2]) <= FLT_EPSILON || fabs(W[3]) <= FLT_EPSILON)
+                if (W[0] == 0 || W[1] == 0 || W[2] == 0 || W[3] == 0)
 				{
 					// if any of the weight W is 0, DT cannot be used
 					canUseDT = false;
