@@ -23,14 +23,24 @@ Otherwise, the internal version will be used and its files will be installed alo
 In case you use clandmark in an academic work, please cite the following paper:
 
 ```tex
-@InProceedings{
-  author = {U{\v{r}}i{\v{c}}{\'{a}}{\v{r}}, Michal and Franc, Vojt{\v{e}}ch and Thomas, Diego and Sugimoto, Akihiro and Hlav{\'{a}}{\v{c}}, V{\'{a}}clav},
-  title = {{Real-time Multi-view Facial Landmark Detector Learned by the Structured Output SVM}},
-  year = {2015},
-  booktitle = {BWILD '15: Biometrics in the Wild 2015 (IEEE FG 2015 Workshop)},
-  venue = {Ljubljana, Slovenia}
-  www = {http://luks.fe.uni-lj.si/bwild15},
+@article{Uricar-IMAVIS-2016,
+  author = {U{\v{r}}i{\v{c}}{\'{a}}{\v{r}}, Michal  and 
+            Franc, Vojt{\v{e}}ch and Thomas, Diego and Sugimoto, Akihiro  and Hlav{\'{a}}{\v{c}}, V{\'{a}}clav },
+  title = {Multi-view facial landmark detector learned by the Structured Output {SVM}},
+  journal = {Image and Vision Computing},
+  volume = {47},
+  pages = {45--59},
+  year = {2016},
+  month = {March},
+  note = {300-W, the First Automatic Facial Landmark Detection in-the-Wild Challenge},
+  issn = {0262-8856},
+  doi = {http://dx.doi.org/10.1016/j.imavis.2016.02.004},
+  url = {http://www.sciencedirect.com/science/article/pii/S0262885616300105},
+  publisher = {Elsevier},
+  address = {Amsterdam, Netherlands},
+  keywords = {Deformable Part Models, Structured output SVM, Facial landmarks detection },
 }
+
 ```
 
 Visit http://cmp.felk.cvut.cz/~uricamic/clandmark for further information.
