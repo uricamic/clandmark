@@ -25,7 +25,7 @@ def read_bbox_from_txt(file_name):
     f = open(file_name)
     str = f.read().replace(',', ' ')
     f.close()
-    ret = np.array(map(int,str.split()) ,dtype=np.int32)
+    ret = np.array(list(map(int,str.split())) ,dtype=np.int32)
     ret = ret.reshape((2,2), order='F')
     return ret
 
@@ -45,13 +45,13 @@ for jpg_name in JPGS:
     d_landmarks = flmrk.detect(arr, bbox)
     n = d_landmarks.shape[1]
 
-    print "test detect method"
+    print("test detect method")
 
     im = Image.fromarray(arr)
     img_dr = ImageDraw.Draw(im)
     img_dr.rectangle([tuple(bbox[:,0]), tuple(bbox[:,1])], outline="#FF00FF")
     r = 2.
-    for i in xrange(n):
+    for i in range(n):
         x = d_landmarks[0,i]
         y = d_landmarks[1,i]
         img_dr.ellipse((x-r, y-r, x+r, y+r), fill=0.)
@@ -59,7 +59,7 @@ for jpg_name in JPGS:
     plt.imshow(np.asarray(im), cmap = plt.get_cmap('gray'))
     plt.show()
 
-    print "test get_normalized_frame method"
+    print("test get_normalized_frame method")
 
     frame = flmrk.get_normalized_frame(arr, bbox)[0]
     frame = frame.astype(np.double)
@@ -67,7 +67,7 @@ for jpg_name in JPGS:
     plt.imshow(np.asarray(im), cmap = plt.get_cmap('gray'))
     plt.show()
 
-    print "test detect_base method"
+    print("test detect_base method")
 
     landmarks = flmrk.detect_base(frame)
 
@@ -75,7 +75,7 @@ for jpg_name in JPGS:
     img_dr = ImageDraw.Draw(im)
 
     r = 2.
-    for i in xrange(n):
+    for i in range(n):
         x = landmarks[0, i]
         y = landmarks[1, i]
         img_dr.ellipse((x-r, y-r, x+r, y+r), fill=0.)
@@ -83,7 +83,7 @@ for jpg_name in JPGS:
     plt.imshow(np.asarray(im), cmap = plt.get_cmap('gray'))
     plt.show()
 
-    print "test psi method"
+    print("test psi method")
     # psi = flmrk.get_psi(frame, landmarks.astype(np.int32), bbox)
     psi = flmrk.get_psi(landmarks, frame, bbox)
 

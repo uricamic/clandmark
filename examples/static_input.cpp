@@ -23,16 +23,13 @@
 
 #define SHOW_WINDOWS
 
-using namespace std;
-using namespace cv;
-using namespace clandmark;
 
 /** Global variables */
 //String face_cascade_name = "lbpcascade_frontalface.xml";
-String face_cascade_name = "haarcascade_frontalface_alt.xml";
-CascadeClassifier face_cascade;
-string window_name = "flandmark - static input demo";
-RNG rng(12345);
+cv::String face_cascade_name = "haarcascade_frontalface_alt.xml";
+cv::CascadeClassifier face_cascade;
+std::string window_name = "flandmark - static input demo";
+cv::RNG rng(12345);
 
 cimg_library::CImg<unsigned char> * cvImgToCImg(cv::Mat &cvImg)
 {
@@ -57,19 +54,19 @@ cv::Mat & CImgtoCvImg(cv::Mat &result, cimg_library::CImg<unsigned char> *img)
 }
 
 /** @function detectAndDisplay */
-void detectAndDisplay( Mat &frame, Flandmark *flandmark, CFeaturePool *featurePool)
+void detectAndDisplay( cv::Mat &frame, clandmark::Flandmark *flandmark, clandmark::CFeaturePool *featurePool)
 {
-	std::vector<Rect> faces;
-	Mat frame_gray;
+    std::vector<cv::Rect> faces;
+    cv::Mat frame_gray;
 	int bbox[8];
-	fl_double_t *landmarks;
+    clandmark::fl_double_t *landmarks;
 
-	cvtColor( frame, frame_gray, CV_BGR2GRAY );
+    cv::cvtColor( frame, frame_gray, CV_BGR2GRAY );
 //    cvtColor( frame, frame_gray, COLOR_BGR2GRAY );  // <- OpenCV 3.0
 	//equalizeHist( frame_gray, frame_gray );
 
 	//-- Detect faces
-	face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+    face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(30, 30) );
 //    face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
 
 	for( uint32_t i = 0; i < faces.size(); i++ )
@@ -97,21 +94,21 @@ void detectAndDisplay( Mat &frame, Flandmark *flandmark, CFeaturePool *featurePo
 
 		// Draw bounding box and detected landmarks
 //		rectangle(frame, Point(bbox[0], bbox[1]), Point(bbox[2], bbox[3]), Scalar(255, 0, 0));
-		circle(frame, Point(int(landmarks[0]), int(landmarks[1])), 2, Scalar(255, 0, 0), -1);
+        cv::circle(frame, cv::Point(int(landmarks[0]), int(landmarks[1])), 2, cv::Scalar(255, 0, 0), -1);
 		for (int i=2; i < 2*flandmark->getLandmarksCount(); i+=2)
 		{
-			circle(frame, Point(int(landmarks[i]), int(landmarks[i+1])), 2, Scalar(0, 0, 255), -1);
+            cv::circle(frame, cv::Point(int(landmarks[i]), int(landmarks[i+1])), 2, cv::Scalar(0, 0, 255), -1);
 		}
 
 		// Textual output
-		printTimingStats(flandmark->timings);
-		printLandmarks(landmarks, flandmark->getLandmarksCount());
-		printLandmarks(flandmark->getLandmarksNF(), flandmark->getLandmarksCount());
+        clandmark::printTimingStats(flandmark->timings);
+        clandmark::printLandmarks(landmarks, flandmark->getLandmarksCount());
+        clandmark::printLandmarks(flandmark->getLandmarksNF(), flandmark->getLandmarksCount());
 	}
 
 	//-- Show what you got
 #ifdef SHOW_WINDOWS
-	imshow( window_name, frame );
+    cv::imshow( window_name, frame );
 #endif
 }
 
@@ -120,27 +117,27 @@ int main( int argc, const char** argv )
 {
 	if (argc < 4)
 	{
-		cerr << "Usage: static_input <path_to_haarcascade> <flandmark_model.xml> <input_image> [<output_image>]" << endl;
+        std::cerr << "Usage: static_input <path_to_haarcascade> <flandmark_model.xml> <input_image> [<output_image>]" << std::endl;
 		return -1;
 	}
 
 	double tim;
-	Mat image;
+    cv::Mat image;
 
 	//Flandmark *flandmark = new Flandmark();
 
-	tim = (double)getTickCount();
+    tim = (double)cv::getTickCount();
 
-	Flandmark *flandmark = Flandmark::getInstanceOf(argv[2]);
+    clandmark::Flandmark *flandmark = clandmark::Flandmark::getInstanceOf(argv[2]);
 	if (!flandmark)
 	{
-		cerr << "Usage: static_input <flandmark_model.xml> <input_image> [<output_image>]" << endl;
+        std::cerr << "Usage: static_input <flandmark_model.xml> <input_image> [<output_image>]" << std::endl;
 		return -1;
 	}
 
-	CFeaturePool *featurePool = new CFeaturePool(flandmark->getBaseWindowSize()[0], flandmark->getBaseWindowSize()[1]);
+    clandmark::CFeaturePool *featurePool = new clandmark::CFeaturePool(flandmark->getBaseWindowSize()[0], flandmark->getBaseWindowSize()[1]);
 	featurePool->addFeaturesToPool(
-				new CSparseLBPFeatures(
+                new clandmark::CSparseLBPFeatures(
 					featurePool->getWidth(),
 					featurePool->getHeight(),
 					featurePool->getPyramidLevels(),
@@ -150,9 +147,9 @@ int main( int argc, const char** argv )
 
 	flandmark->setNFfeaturesPool(featurePool);
 
-	tim = ((double)getTickCount() - tim)/getTickFrequency() * 1000;
+    tim = ((double)cv::getTickCount() - tim)/cv::getTickFrequency() * 1000;
 
-	cout << "Flandmark model loaded in " << tim << " ms" << endl;
+    std::cout << "Flandmark model loaded in " << tim << " ms" << std::endl;
 
 	//-- 1. Load the cascades
 	if( !face_cascade.load( argv[1]+face_cascade_name ) )
@@ -162,27 +159,27 @@ int main( int argc, const char** argv )
 	};
 
 #ifdef SHOW_WINDOWS
-	namedWindow(window_name, CV_WINDOW_KEEPRATIO);
+    cv::namedWindow(window_name, CV_WINDOW_KEEPRATIO);
 //  //namedWindow(window_name, WINDOW_KEEPRATIO);
 #endif
 
 	// Read input image
-	image = imread(argv[3]);
+    image = cv::imread(argv[3]);
 
 	if (!image.empty())
 	{
 		detectAndDisplay( image, flandmark, featurePool );
 	} else {
-		cout << "Wrong input." << endl;
+        std::cout << "Wrong input." << std::endl;
 	}
 
 	if (argc > 4)
 	{
-		imwrite(argv[4], image);
+        cv::imwrite(argv[4], image);
 	}
 
 #ifdef SHOW_WINDOWS
-	waitKey();
+    cv::waitKey();
 #endif
 
 	delete featurePool;
