@@ -2,6 +2,7 @@
 
 find_package(clandmark REQUIRED)
 find_package(flandmark REQUIRED)
+
 include_directories(
   ${CLANDMARK_INCLUDE_DIRS}
   ${FLANDMARK_INCLUDE_DIRS}
@@ -25,9 +26,9 @@ include( UseCython )
 
 # propagate precision definition
 if(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=1 )
+  add_definitions( -DDOUBLE_PRECISION=1 )
 else(DOUBLE_PRECISION)
-    add_definitions( -DDOUBLE_PRECISION=0 )
+  add_definitions( -DDOUBLE_PRECISION=0 )
 endif(DOUBLE_PRECISION)
 
 

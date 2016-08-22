@@ -44,6 +44,7 @@ configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/CLandmarkConfig.h.in
     ${PROJECT_BINARY_DIR}/CLandmarkConfig.h
 )
+
 set(clandmark_headers
     msvc-compat.h
     base64.h
@@ -113,12 +114,12 @@ endif(USE_OPENMP)
 # CLANDMARK
 add_library(clandmark ${clandmark_srcs})
 if(NOT ${BUILD_SHARED_LIBS})
-    if(NOT MSVC)
-	set_target_properties(clandmark PROPERTIES PREFIX "lib")
-    endif()
+  if(NOT MSVC)
+      set_target_properties(clandmark PROPERTIES PREFIX "lib")
+  endif()
+  set_target_properties(clandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 endif()
 target_include_directories(clandmark PUBLIC ${CImg_INCLUDE_DIR} ${RapidXML_INCLUDE_DIR})
-set_target_properties(clandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 set_target_properties(clandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
     VERSION "${clandmark_VERSION}"
@@ -127,12 +128,12 @@ set_target_properties(clandmark PROPERTIES
 # FLANDMARK
 add_library(flandmark ${flandmark_srcs})
 if(NOT ${BUILD_SHARED_LIBS})
-    if(NOT MSVC)
-	set_target_properties(flandmark PROPERTIES PREFIX "lib")
-    endif()
+  if(NOT MSVC)
+      set_target_properties(flandmark PROPERTIES PREFIX "lib")
+  endif()
+  set_target_properties(flandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 endif()
 target_link_libraries(flandmark clandmark)
-set_target_properties(flandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 set_target_properties(flandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
     VERSION "${clandmark_VERSION}"
@@ -140,16 +141,16 @@ set_target_properties(flandmark PROPERTIES
 
 # Models learned distributed with CLandmark
 set(flandmark_models
-    ${CMAKE_SOURCE_DIR}/data/flandmark_model.xml
-    ${CMAKE_SOURCE_DIR}/data/haarcascade_frontalface_alt.xml
+  ${CMAKE_SOURCE_DIR}/data/flandmark_model.xml
+  ${CMAKE_SOURCE_DIR}/data/haarcascade_frontalface_alt.xml
 )
 
 install(TARGETS clandmark flandmark
-    EXPORT CLandmarkTargets
-	 LIBRARY DESTINATION lib
-	 ARCHIVE DESTINATION lib
-	 RUNTIME DESTINATION bin
-	 INCLUDES DESTINATION include
+  EXPORT CLandmarkTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 install(FILES ${clandmark_headers} DESTINATION include COMPONENT Devel)
 install(FILES ${flandmark_headers} DESTINATION include COMPONENT Devel)
