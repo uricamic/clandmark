@@ -2,7 +2,7 @@ cimport c_flandmark
 cimport c_cimg
 cimport c_featurePool
 
-from hgext.largefiles import featuresetup
+#from hgext.largefiles import featuresetup
 from libc.stdlib cimport calloc, malloc, free
 
 from cpython.version cimport PY_MAJOR_VERSION

@@ -103,3 +103,4 @@ cdef class PyFeaturePool:
         # TODO: Check input
         # cdef unsigned char* nf = <unsigned char*>NF
         self.thisptr.updateNFmipmap(self.thisptr.getWidth(), self.thisptr.getHeight(), <unsigned char*>numpy.PyArray_DATA(nf))
+		

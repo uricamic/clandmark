@@ -112,7 +112,10 @@ void detectAndDisplay( cv::Mat &frame, clandmark::Flandmark *flandmark)
 
 /** @function main */
 int main( int argc, const char** argv )
+
 {
+	std::cout << "DEBUG" << std::endl;
+
 	if (argc < 5)
 	{
         std::cerr << "Usage: video_input <path_to_haarcasade> <flandmark_model.xml> { cam | vid } [ filename | cam_id ] [ output_filename ]" << std::endl;
