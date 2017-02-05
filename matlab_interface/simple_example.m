@@ -11,7 +11,7 @@ clearvars; close all;
 addpath('../learning/flandmark/code/functions/');
  
 % DOUBLE PRECISION
-rmpath('./mex_single_precision/');
+% rmpath('./mex_single_precision/');
 addpath('./mex/');
 
 % SINGLE PRECISION
@@ -71,7 +71,7 @@ for example = 1 : N
                 
         % show landmarks 
         plot(P(1, :), P(2, :), 'rs', 'LineWidth', 1, 'MarkerSize', 5, 'MarkerFaceColor', 'r');
-        text(P(1, :), P(2, :), landmark_names, 'color', 'r', 'FontSize', 12, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+%         text(P(1, :), P(2, :), landmark_names, 'color', 'r', 'FontSize', 12, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
         for a = 1 : numel(edges(1, :)) 
             line([P(1, edges(1, a)) P(1, edges(2, a))], [P(2, edges(1, a)) P(2, edges(2, a))], 'color', 'b'); 
         end;

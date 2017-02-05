@@ -24,8 +24,8 @@
 #
 # =============================================================================
 
-find_path(CLANDMARK_INCLUDE_DIR CLandmark.h HINTS ${CLANDMARK_INSTALL_DIR} ${CLANDMARK_INSTALL_DIR}/include )
-find_path(FLANDMARK_INCLUDE_DIR Flandmark.h HINTS ${CLANDMARK_INSTALL_DIR} ${CLANDMARK_INSTALL_DIR}/include )
+find_path(CLANDMARK_INCLUDE_DIR CLandmark.h)
+find_path(FLANDMARK_INCLUDE_DIR Flandmark.h)
 
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".so" ".dll" ".dylib")
 find_library(CLANDMARK_LIBRARY_SHARED NAMES clandmark)
