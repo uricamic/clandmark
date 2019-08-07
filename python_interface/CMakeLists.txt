@@ -1,6 +1,7 @@
 # python_interface/CMakeLists.txt
 
 find_package(clandmark REQUIRED)
+find_package(python)
 
 include_directories(
   ${CLANDMARK_INCLUDE_DIRS}
@@ -11,9 +12,19 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # include_directories(${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13)
 # include_directories(${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6)
 
-execute_process(COMMAND python -c "import numpy as np; print np.get_include()" OUTPUT_VARIABLE NUMPY_INCLUDE)
-message(STATUS "numpy include directories found: ${NUMPY_INCLUDE}")
-include_directories(${NUMPY_INCLUDE})
+# execute_process(COMMAND python -c "import numpy as np; print np.get_include()" OUTPUT_VARIABLE NUMPY_INCLUDE)
+execute_process(
+  # COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print('\"{}\"'.format(numpy.get_include()));"
+  COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print('{}'.format(numpy.get_include()));"
+  ERROR_VARIABLE NUMPY_FIND_ERROR
+  RESULT_VARIABLE NUMPY_FIND_RESULT
+  OUTPUT_VARIABLE NUMPY_FIND_OUTPUT
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+message(STATUS "NUMPY_FIND_ERROR = ${NUMPY_FIND_ERROR}")
+message(STATUS "NUMPY_FIND_RESULT = ${NUMPY_FIND_RESULT}")
+message(STATUS "NUMPY_FIND_OUTPUT = ${NUMPY_FIND_OUTPUT}")
+include_directories(${NUMPY_FIND_OUTPUT})
 
 set(PY_NAME_interface python_interface)
 
@@ -37,7 +48,8 @@ include( UseCython )
 # no-longer needed in the build tree.  However, with pure *.py source, the
 # source is processed directly.  To handle this, we reproduce the availability
 # of the source files in the build tree.
-add_custom_target(ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
+add_custom_target(
+  ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
   ${CMAKE_MODULE_PATH}/ReplicatePythonSourceTree.cmake
   ${CMAKE_CURRENT_BINARY_DIR}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

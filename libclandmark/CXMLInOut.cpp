@@ -164,7 +164,9 @@ XmlNode XmlStorage::operator [](const char *name)
 void XmlStorage::writeRaw(const void *bindata, int length)
 {
 	char *base64Ascii;
-	int base64AsciiLen;
+	//int base64AsciiLen;
+	//base64Ascii = base64(bindata, length, &base64AsciiLen);
+	size_t base64AsciiLen;
 	base64Ascii = base64(bindata, length, &base64AsciiLen);
 
 	if (state == VALUE_EXPECTED)

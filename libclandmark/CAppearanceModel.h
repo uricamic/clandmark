@@ -180,7 +180,7 @@ public:
 	 * @brief setName
 	 * @param name
 	 */
-	inline void setName(std::string name) { this->name = name; }
+	inline void setName(std::string name_) { this->name = name_; }
 
 	/**
 	 * @brief getName
@@ -198,7 +198,7 @@ public:
 	 * @brief setType
 	 * @param type
 	 */
-	inline void setType(std::string type) { this->type = type; }
+	inline void setType(std::string type_) { this->type = type_; }
 
 	/**
 	 * @brief hasLoss
@@ -246,7 +246,8 @@ private:
 protected:
 
 	const int kNodeID;								/**< */
-	const int kLength;								/**< number of feature vectors for node (component)*/
+	//const int kLength;								/**< number of feature vectors for node (component)*/
+	const size_t kLength;							/**< number of feature vectors for node (component)*/
 
 	int size[2];									/**< */
 	int searchSpace[4];								/**< */
@@ -351,12 +352,13 @@ public:
 		   << "}";
 	}
 
-	int best;										/**< */
-	std::vector< CAppearanceModel* > appearances;	/**< */
+	//int best;										/**< */
+	size_t best;									/**< */
 	int ss[4];										/**< */
 	int winSize[2];									/**< */
 	int nodeID;										/**< */
 	std::string name;								/**< */
+	std::vector< CAppearanceModel* > appearances;	/**< */
 };
 
 }

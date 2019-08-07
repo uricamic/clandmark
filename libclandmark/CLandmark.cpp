@@ -340,10 +340,10 @@ fl_double_t *CLandmark::getLossValues(int *position)
 
 		int estimate[2] = {position[INDEX(0, i, 2)]-ss[0], position[INDEX(1, i, 2)]-ss[1]};
 
-		int position = INDEX(estimate[1], estimate[0], size[1]);
+		int pos = INDEX(estimate[1], estimate[0], size[1]);
 		if (vertices[i].appearances[vertices[i].best]->hasLoss())
 		{
-			L[i] = vertices[i].appearances[vertices[i].best]->getLoss()->getLossAt(position);
+			L[i] = vertices[i].appearances[vertices[i].best]->getLoss()->getLossAt(pos);
 		} else {
 			L[i] = 0.0;
 		}
@@ -1076,8 +1076,8 @@ void CLandmark::write(const char *filename, bool writeW)
 	fs
 	<< "name" << this->name
 	<< "version" << version
-	<< "num_nodes" << kLandmarksCount
-	<< "num_edges" << kEdgesCount
+	<< "num_nodes" << (int)kLandmarksCount
+	<< "num_edges" << (int)kEdgesCount
 	<< "graph_type" << TREE
 	<< "bw_width" << baseWindow[0]
 	<< "bw_height" << baseWindow[1]
@@ -1086,7 +1086,8 @@ void CLandmark::write(const char *filename, bool writeW)
     << "sigma" << sigma;
 
 	fs << "Nodes" << "[";
-	for (int i=0; i < kLandmarksCount; ++i)
+	//for (int i=0; i < kLandmarksCount; ++i)
+	for (size_t i = 0; i < kLandmarksCount; ++i)
 	{
 		fs << "Node";
 		fs << "{";
@@ -1105,7 +1106,8 @@ void CLandmark::write(const char *filename, bool writeW)
 	fs << "]";
 
 	fs << "Edges" << "[";
-	for (int i=0; i < kEdgesCount; ++i)
+	//for (int i=0; i < kEdgesCount; ++i)
+	for (size_t i = 0; i < kEdgesCount; ++i)
 	{
 		edges.at(i)->write(fs, w[kLandmarksCount+i][0], writeW);
 	}

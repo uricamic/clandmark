@@ -61,8 +61,10 @@ protected:
 	std::vector< CDeformationCost* > *edges;	/**< */
 
 	// DT
-	int bw[2];									/**< */
-	int tmpFsize;								/**< */
+	//int bw[2];								/**< */
+	//int tmpFsize;								/**< */
+	size_t bw[2];								/**< */
+	size_t tmpFsize;							/**< */
 	fl_double_t * tmpA, * tmpB;					/**< */
 	fl_double_t * rectangle;					/**< */
 	fl_double_t * tmpDT;						/**< */

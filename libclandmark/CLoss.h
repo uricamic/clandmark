@@ -121,14 +121,16 @@ private:
 	/**
 	 * @brief CLoss
 	 */
-	CLoss(const CLoss&) : kLength(-1)
+	//CLoss(const CLoss&) : kLength(-1)
+	CLoss(const CLoss&) : kLength(0)
 	{}
 
 protected:
 
-	const int kLength;			/**< */
+	//const int kLength;				/**< */
+	const size_t kLength;				/**< */
 	fl_double_t normalizationFactor;	/**< */
-	int *admissiblePositions;	/**< */
+	int *admissiblePositions;			/**< */
 
 };
 

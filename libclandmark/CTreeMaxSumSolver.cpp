@@ -93,7 +93,8 @@ CTreeMaxSumSolver::CTreeMaxSumSolver(std::vector< Vertex > * const vertices, std
 	// prepare intermediate arrays for indices
 	for (int i=0; i < kLandmarks; ++i)
 	{
-		int best = 0, length = 0;
+		//int best = 0, length = 0;
+		size_t best = 0, length = 0;
 		if (graph[i].ancestors.size() > 0)
 		{
 			best = vertices->at(graph[i].ancestors.at(0)).best;

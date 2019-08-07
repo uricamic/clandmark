@@ -107,8 +107,10 @@ private:
 
 private:
 
-	const int kWidth;						/**< width of NF mipmap */
-	const int kHeight;						/**< height of NF mipmap */
+	//const int kWidth;						/**< width of NF mipmap */
+	//const int kHeight;					/**< height of NF mipmap */
+	const size_t kWidth;					/**< width of NF mipmap */
+	const size_t kHeight;					/**< height of NF mipmap */
 
 	std::vector<CFeatures*> featurePool;	/**< */
 	unsigned char *NF_mipmap;				/**< Normalized Frame mipmap */

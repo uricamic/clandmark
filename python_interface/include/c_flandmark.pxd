@@ -34,6 +34,7 @@ cdef extern from "Flandmark.h"  namespace "clandmark":
         fl_double_t* getFeatures_base(CImg[unsigned char]*, int * const)
         fl_double_t* getFeatures(CImg[unsigned char]*, int * const, int * const)
         fl_double_t* getFeatures(int * const)
+        fl_double_t getScore()
         void setLossTable(fl_double_t* loss_data, const int landmark_id)
         const int * getSearchSpace(const int landmark_id)
         const int * getBaseWindowSize()

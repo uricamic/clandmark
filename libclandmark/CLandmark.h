@@ -254,13 +254,15 @@ public:
 	 * @brief getLandmarksCount
 	 * @return
 	 */
-	inline int getLandmarksCount(void) { return vertices.size(); }
+	//inline int getLandmarksCount(void) { return vertices.size(); }
+	inline size_t getLandmarksCount(void) { return vertices.size(); }
 
 	/**
 	 * @brief getEdgesCount
 	 * @return
 	 */
-	inline int getEdgesCount(void) { return kEdgesCount; }
+	//inline int getEdgesCount(void) { return kEdgesCount; }
+	inline size_t getEdgesCount(void) { return kEdgesCount; }
 
 	/**
 	 * @brief computeWdimension
@@ -380,7 +382,7 @@ public:
 	 * @brief setSmoothingSigma
 	 * @param sigma
 	 */
-	inline void setSmoothingSigma(fl_double_t sigma) { this->sigma = sigma; }
+	inline void setSmoothingSigma(fl_double_t sigma_) { this->sigma = sigma_; }
 
 	/**
 	 * @brief getSmoothingSigma
@@ -508,8 +510,10 @@ protected:
 	std::string name;									/**< */
 
 	// internal parameters
-	int kLandmarksCount;								/**< */
-	int kEdgesCount;									/**< */
+	//int kLandmarksCount;								/**< */
+	//int kEdgesCount;									/**< */
+	size_t kLandmarksCount;								/**< */
+	size_t kEdgesCount;									/**< */
 
 	// convention for size [width x height]
 	int baseWindow[2];									/**< */

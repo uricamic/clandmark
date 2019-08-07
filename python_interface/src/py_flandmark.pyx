@@ -434,6 +434,9 @@ cdef class PyFlandmark:
 
         return landmarks
 
+    def get_score(self):
+        cdef double score = self.thisptr.getScore()
+        return score
 
     ###################################################################################
     # aulilary functions

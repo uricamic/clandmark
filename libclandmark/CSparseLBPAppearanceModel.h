@@ -122,7 +122,8 @@ private:
 	const int kHeightOfPyramid;			/**< */
 
 	int *LBPFeatures;					/**< */
-	int kSparseFeatureDimension;		/**< */
+	//int kSparseFeatureDimension;		/**< */
+	size_t kSparseFeatureDimension;		/**< */
 	int *window;						/**< */
 
 };

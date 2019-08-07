@@ -4,7 +4,7 @@ project(clandmark)
 
 # The version number
 set(clandmark_VERSION_MAJOR 1)
-set(clandmark_VERSION_MINOR 5)
+set(clandmark_VERSION_MINOR 6)
 set(clandmark_VERSION ${clandmark_VERSION_MAJOR}.${clandmark_VERSION_MINOR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")

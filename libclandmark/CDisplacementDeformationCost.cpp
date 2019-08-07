@@ -116,7 +116,7 @@ void CDisplacementDeformationCost::write(XmlStorage &fs, fl_double_t * const w, 
 	   << "ParentID" << parent->getNodeID()
 	   << "ChildID" << child->getNodeID()
 	   << "Type" << DISPLACEMENT_VECTOR
-	   << "Dims" << kDimension;
+	   << "Dims" << (int)kDimension;
 
 	if (loss)
 		fs << "LossType" << loss->getName();

@@ -20,12 +20,18 @@ if(NOT RAPIDXML_FOUND)
     message(STATUS "RapidXML not found - using internal version.")
     set(RapidXML_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/>" CACHE PATH "Include directory for RapidXML" FORCE)
     file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
-    install(FILES ${RapidXML_HEADERS} DESTINATION include COMPONENT Devel)
     install(
-	FILES
-	${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
-	${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
-	DESTINATION share/doc/clandmark COMPONENT Devel
+        FILES
+        ${RapidXML_HEADERS}
+        DESTINATION include
+        COMPONENT Devel
+    )
+    install(
+	    FILES
+	    ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
+	    ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
+        DESTINATION share/doc/clandmark
+        COMPONENT Devel
     )
 endif()
 
@@ -34,10 +40,18 @@ find_package(CImg)
 if(NOT CIMG_FOUND)
     message(STATUS "CImg not found - using internal version.")
     set(CImg_INCLUDE_DIR "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/>" CACHE PATH "Include directory for CImg" FORCE)
-    install(FILES ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
-	DESTINATION include COMPONENT Devel)
+    install(
+        FILES
+        ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
+        DESTINATION include
+        COMPONENT Devel
+    )
     file(GLOB CImg_DOCS ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/*.txt)
-    install(FILES ${CImg_DOCS} DESTINATION share/doc/clandmark COMPONENT Devel)
+    install(
+        FILES ${CImg_DOCS}
+        DESTINATION share/doc/clandmark
+        COMPONENT Devel
+    )
 endif()
 
 configure_file(
@@ -134,7 +148,8 @@ if(NOT ${BUILD_SHARED_LIBS})
   set_target_properties(flandmark PROPERTIES POSITION_INDEPENDENT_CODE TRUE)	# -fPIC
 endif()
 target_link_libraries(flandmark clandmark)
-set_target_properties(flandmark PROPERTIES
+set_target_properties(
+    flandmark PROPERTIES
     SOVERSION "${clandmark_VERSION_MAJOR}"
     VERSION "${clandmark_VERSION}"
 )
@@ -145,13 +160,45 @@ set(flandmark_models
   ${CMAKE_SOURCE_DIR}/data/haarcascade_frontalface_alt.xml
 )
 
-install(TARGETS clandmark flandmark
-  EXPORT CLandmarkTargets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
+install(
+    TARGETS clandmark flandmark
+    EXPORT CLandmarkTargets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
 )
+
+# RapidXML
+file(GLOB RapidXML_HEADERS ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/*.hpp)
+install(
+    FILES
+    ${RapidXML_HEADERS}
+    DESTINATION include
+    COMPONENT Devel
+)
+install(
+    FILES
+    ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/manual.html
+    ${PROJECT_SOURCE_DIR}/3rd_party/rapidxml-1.13/license.txt
+    DESTINATION share/doc/clandmark
+    COMPONENT Devel
+)
+
+# CImg
+install(
+    FILES
+    ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/CImg.h
+    DESTINATION include
+    COMPONENT Devel
+)
+file(GLOB CImg_DOCS ${PROJECT_SOURCE_DIR}/3rd_party/CImg-1.5.6/*.txt)
+install(
+    FILES ${CImg_DOCS}
+    DESTINATION share/doc/clandmark
+    COMPONENT Devel
+)
+
 install(FILES ${clandmark_headers} DESTINATION include COMPONENT Devel)
 install(FILES ${flandmark_headers} DESTINATION include COMPONENT Devel)
 install(FILES ${flandmark_models} DESTINATION share/clandmark/models)

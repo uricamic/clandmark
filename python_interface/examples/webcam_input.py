@@ -6,7 +6,8 @@ Created on Sun Feb 05 16:26:55 2017
 """
 
 import sys
-sys.path.append("D:/GitHub/clandmark/install/share/clandmark/python/")
+# sys.path.append("D:/GitHub/clandmark/install/share/clandmark/python/")
+sys.path.append("D:/GitHub/clandmark/build_win10/install/share/clandmark/python")
 
 from py_flandmark import PyFlandmark
 from py_featurePool import PyFeaturePool
@@ -29,7 +30,7 @@ def rgb2gray(rgb):
 	converts rgb array to grey scale variant
 	accordingly to fomula taken from wiki
 	(this function is missing in python)
-	"""	
+	"""
 	return np.dot(rgb[...,:3], [0.299, 0.587, 0.144])
 
 cascPath = "D:/GitHub/clandmark/data/haarcascade_frontalface_alt.xml"
@@ -54,12 +55,12 @@ while True:
 
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
-        bbox = np.array([x, y, x+w, y+h], dtype=np.int32)	
-        bbox = bbox.reshape((2,2), order='F')	
+        bbox = np.array([x, y, x+w, y+h], dtype=np.int32)
+        bbox = bbox.reshape((2,2), order='F')
         start_time = time.time()
         P = flandmark.detect_optimized(arr, bbox)
-        print "Elapsed time: %s ms" % ((time.time() - start_time) * 1000)
-        for i in xrange(0, len(P[0,:])-1):
+        print('Elapsed time: {} ms'.format((time.time() - start_time) * 1000))
+        for i in range(len(P[0,:])-1):
             cv2.circle(frame, (int(round(P[0,i])), int(round(P[1,i]))), 1, (0, 0, 255), 2)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 

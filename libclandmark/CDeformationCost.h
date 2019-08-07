@@ -151,7 +151,8 @@ protected:
 	// Loss function
 	CLoss *loss;
 
-	int kDimension;
+	//int kDimension;
+	size_t kDimension;
 
 	// internal representation of features goes to specialized classes (e.g. CDisplacementDeformationCost, etc.)
 	// convention on order for edge (parent, child)

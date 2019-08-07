@@ -69,7 +69,8 @@ const static unsigned char unb64[]={
 // Converts binary data of length=len to base64 characters.
 // Length of the resultant string is stored in flen
 // (you must pass pointer flen).
-char* base64( const void* binaryData, int len, int *flen )
+//char* base64( const void* binaryData, int len, int *flen )
+char* base64(const void* binaryData, int len, size_t *flen)
 {
 	unsigned char* bin = (unsigned char*) binaryData ;
 	char* res;
@@ -123,7 +124,7 @@ unsigned char* unbase64( const char* ascii, int len, int *flen )
 {
 	unsigned char *safeAsciiPtr = (unsigned char*)ascii;
 	unsigned char *bin;
-	int cb=0;
+	int cb = 0;
 	int charNo;
 	int pad = 0;
 
